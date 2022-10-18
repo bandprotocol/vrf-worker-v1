@@ -1,0 +1,81 @@
+#!/bin/bash
+
+# [Developer] Please fill in all the deployment environmental variables below
+export SERVICE_NAME=vrf-test
+export REGION=asia-southeast1
+export DB_CONNECTION_NAME=project-id:asia-southeast1:vrf-worker
+export PROJECT_ID=project-id
+export VPC_CONNECTOR=default
+
+# ENV variables 
+export CHAIN=RINKEBY
+export POA_CHAIN=True
+export JSON_RPC_ENDPOINT=https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161
+export BAND_RPC=laozi-testnet5.bandchain.org
+export BAND_RPC_PORT=443
+export BAND_RPC_BLOCK=https://rpc.laozi-testnet5.bandchain.org
+export BAND_PROOF_URL=https://laozi-testnet5.bandchain.org/api/oracle/proof/
+export VRF_PROVIDER_ADDRESS=0xd814466Bee0D793a4Ba1E90Fe275A2dE75184aB6
+export VRF_LENS_ADDRESS=0x6602162aFCD8a283fA42dBdBFFd6ECbcd276a4A1
+export BRIDGE_ADDRESS=0xB8651240368f64aF317c331296b872b815892E00
+export START_NONCE=0
+export DISCORD_WEBHOOK=<DISCORD_WEBHOOK>
+export WHITELISTED_CALLERS=0xE2f7Cf77DF70af8e92FF69B8Ffc92585C307a221
+export WORKER_FEE_BAND=0
+export BLOCK_DIFF=10
+export SUPPORT_EIP1559=True
+export INSTANCE_HOST=<INSTANCE_HOST_PRIVATE_IP>
+export DB_PORT=5432
+export DB_USER=<DB_USERNAME>
+export DB_NAME=postgres
+export PROJECT=project-id
+export QUEUE=queue1
+export LOCATION=asia-southeast1
+export CLOUD_RUN_URL=https://vrf-test-wgqbn-as.a.run.app
+export IN_SECONDS=5
+export DEADLINE=60
+export AUDIENCE=https://vrf-test-wgqbn-as.a.run.app
+export SERVICE_ACCOUNT_DETAIL=vrf-worker-test@project-id.iam.gserviceaccount.com
+
+# ENV to be referenced as secret on Cloud Run
+# WORKER_PK
+# BAND_MNEMONIC
+# DB_PASSWORD
+
+
+# Deploy Cloud Run
+gcloud run deploy $SERVICE_NAME \
+    --source . \
+    --region $REGION \
+    --no-allow-unauthenticated \
+    --add-cloudsql-instances $DB_CONNECTION_NAME \
+    --project $PROJECT_ID \
+    --vpc-connector $VPC_CONNECTOR \
+    --set-env-vars CHAIN=$CHAIN \
+    --set-env-vars POA_CHAIN=$POA_CHAIN \
+    --set-env-vars "^##^JSON_RPC_ENDPOINT=$JSON_RPC_ENDPOINT" \
+    --set-env-vars "^##^BAND_RPC=$BAND_RPC" \
+    --set-env-vars BAND_RPC_PORT=$BAND_RPC_PORT \
+    --set-env-vars BAND_RPC_BLOCK=$BAND_RPC_BLOCK \
+    --set-env-vars BAND_PROOF_URL=$BAND_PROOF_URL \
+    --set-env-vars VRF_PROVIDER_ADDRESS=$VRF_PROVIDER_ADDRESS \
+    --set-env-vars VRF_LENS_ADDRESS=$VRF_LENS_ADDRESS \
+    --set-env-vars BRIDGE_ADDRESS=$BRIDGE_ADDRESS \
+    --set-env-vars START_NONCE=$START_NONCE \
+    --set-env-vars DISCORD_WEBHOOK=$DISCORD_WEBHOOK \
+    --set-env-vars "^##^WHITELISTED_CALLERS=$WHITELISTED_CALLERS" \
+    --set-env-vars WORKER_FEE_BAND=$WORKER_FEE_BAND \
+    --set-env-vars BLOCK_DIFF=$BLOCK_DIFF \
+    --set-env-vars SUPPORT_EIP1559=$SUPPORT_EIP1559 \
+    --set-env-vars INSTANCE_HOST=$INSTANCE_HOST \
+    --set-env-vars DB_PORT=$DB_PORT \
+    --set-env-vars DB_USER=$DB_USER \
+    --set-env-vars DB_NAME=$DB_NAME \
+    --set-env-vars PROJECT=$PROJECT \
+    --set-env-vars QUEUE=$QUEUE \
+    --set-env-vars LOCATION=$LOCATION \
+    --set-env-vars CLOUD_RUN_URL=$CLOUD_RUN_URL \
+    --set-env-vars IN_SECONDS=$IN_SECONDS \
+    --set-env-vars DEADLINE=$DEADLINE \
+    --set-env-vars AUDIENCE=$AUDIENCE \
+    --set-env-vars SERVICE_ACCOUNT_DETAIL=$SERVICE_ACCOUNT_DETAIL

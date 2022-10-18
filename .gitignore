@@ -1,0 +1,10 @@
+.idea/
+__pycache__
+.env
+*venv*
+.DS_Store
+.pytest_cache
+vrf_worker.db
+
+# Deploy scripts
+*_deploy*
