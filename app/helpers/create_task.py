@@ -1,15 +1,14 @@
 import datetime
 import json
-from typing import Type
 from google.cloud.tasks_v2 import CloudTasksClient, HttpMethod
 from google.protobuf import duration_pb2, timestamp_pb2
-from .config import AppEnvConfig
+from .config import CreateTaskConfig
 
 
 class CreateTask:
     """The class contains a method to create a new task on GCP Cloud Tasks."""
 
-    def __init__(self, _config: Type[AppEnvConfig]) -> None:
+    def __init__(self, _config: CreateTaskConfig) -> None:
         """Sets config from AppEnvConfig class.
 
         Args:

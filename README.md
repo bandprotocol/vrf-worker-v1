@@ -1,4 +1,4 @@
-# VRF Worker
+# How to deploy and run VRF Worker
 ### What is VRF Worker
 VRF Worker is an off-chain service used for relaying VRF random value requests and results between the BandChain and the target chain (e.g. Ethereum). It works as follows:
 1. The VRF Worker listens for incoming VRF random value requests from a VRF Contract on the target chain
@@ -9,8 +9,6 @@ VRF Worker is an off-chain service used for relaying VRF random value requests a
 ## Deployment
 We provide scripts and instructions for local deployment and deployment on Google Cloud Platform. Note that the deployment procedures are currently only avaiable in Python.
 
-Github: [vrf_worker repository](https://)
-
 ### Folder structure
 
 ```
@@ -20,11 +18,14 @@ vrf_worker
    │  ├─ app.py
    │  ├─ app_run_local.py
    │  └─ helpers
+   │     ├─ band_interactor.py
    │     ├─ config.py
    │     ├─ create_task.py
    │     ├─ create_task_main.py
    │     ├─ database.py
+   │     ├─ error_handler.py
    │     ├─ helpers.py
+   │     ├─ web3_interactor.py
    ├─ requirements.txt
    ├─ scripts
    │  ├─ create_task.sh
@@ -43,6 +44,9 @@ vrf_worker
 | `app.py `             | Main entry point of the service for GCP                |
 | `app_run_local`       | Main entry point for local deployment                  |
 | `helpers.py`          | Helper with core logics                                |
+| `web3_interactor`     | Helper to interact with Web3                           |
+| `band_interactor`     | Helper to interact with Band Client                    |
+| `error_handler`       | Helper to handle errors and notification               |
 | `database.py`         | Helper to manage database interaction                  |
 | `signatures.py `      | Helper to manage signature filtering                   |
 | `create_task.py`      | Helper to create a new task on Cloud Tasks             |

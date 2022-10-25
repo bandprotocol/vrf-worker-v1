@@ -1,9 +1,10 @@
+from dataclasses import dataclass
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-
+@dataclass
 class AppEnvConfig:
     RUN_LOCAL = os.getenv("RUN_LOCAL", "True").lower() == "true"
     CHAIN = os.getenv("CHAIN")
@@ -28,6 +29,7 @@ class AppEnvConfig:
     SUPPORT_EIP1559 = os.getenv("SUPPORT_EIP1559", "False").lower() == "true"
 
 
+@dataclass
 class CreateTaskConfig:
     PROJECT = os.getenv("PROJECT")
     QUEUE = os.getenv("QUEUE")
@@ -39,7 +41,8 @@ class CreateTaskConfig:
     SERVICE_ACCOUNT_DETAIL = os.getenv("SERVICE_ACCOUNT_DETAIL")
 
 
-class DbConfig(object):
+@dataclass
+class DbConfig:
     SCHEDULER_API_ENABLED = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -55,6 +58,7 @@ class DbConfig(object):
         SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{INSTANCE_HOST}:{DB_PORT}/{DB_NAME}"
 
 
+@dataclass
 class Abi:
     VRF_PROVIDER_ABI = [
         {
