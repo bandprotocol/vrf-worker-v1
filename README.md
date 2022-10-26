@@ -1,4 +1,4 @@
-# How to deploy and run VRF Worker
+# Band VRF Worker
 ### What is VRF Worker
 VRF Worker is an off-chain service used for relaying VRF random value requests and results between the BandChain and the target chain (e.g. Ethereum). It works as follows:
 1. The VRF Worker listens for incoming VRF random value requests from a VRF Contract on the target chain
