@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 @dataclass
 class AppEnvConfig:
     RUN_LOCAL = os.getenv("RUN_LOCAL", "True").lower() == "true"
@@ -12,10 +13,10 @@ class AppEnvConfig:
     PORT = int(os.getenv("PORT", 8080))
     HOST = os.getenv("HOST", "0.0.0.0")
     JSON_RPC_ENDPOINT = os.getenv("JSON_RPC_ENDPOINT").split(",")
-    BAND_RPC = os.getenv("BAND_RPC", "laozi-testnet5.bandchain.org").split(",")
+    BAND_RPC = os.getenv("BAND_RPC", "laozi-testnet6.bandchain.org").split(",")
     BAND_RPC_PORT = int(os.getenv("BAND_RPC_PORT", 443))
-    BAND_RPC_BLOCK = os.getenv("BAND_RPC_BLOCK", "https://rpc.laozi-testnet5.bandchain.org")
-    BAND_PROOF_URL = os.getenv("BAND_PROOF_URL", "https://laozi-testnet5.bandchain.org/api/oracle/proof")
+    BAND_RPC_BLOCK = os.getenv("BAND_RPC_BLOCK", "https://rpc.laozi-testnet6.bandchain.org")
+    BAND_PROOF_URL = os.getenv("BAND_PROOF_URL", "https://laozi-testnet6.bandchain.org/api/oracle/proof")
     VRF_PROVIDER_ADDRESS = os.getenv("VRF_PROVIDER_ADDRESS")
     VRF_LENS_ADDRESS = os.getenv("VRF_LENS_ADDRESS")
     BRIDGE_ADDRESS = os.getenv("BRIDGE_ADDRESS")
