@@ -26,7 +26,7 @@ async def run_vrf_worker() -> tuple[str, int]:
 
     Listens for an incoming HTTP POST request and executes the following:
 
-    Preparation phase - Creates new database tables if  required. Checks the
+    Preparation phase - Creates new database tables if required. Checks the
     error count and sends notification if the error limit is reached. Sets web3
     to a working JSON RPC endpoint.  Polls the client chain's block number
     until a new block is created.

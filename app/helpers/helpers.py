@@ -1,9 +1,8 @@
 import json
 import requests
-import requests
 import time
 from func_timeout import func_timeout, FunctionTimedOut
-from typing import Optional, Tuple, Type
+from typing import Optional, Tuple
 from pyband.proto.cosmos.base.abci.v1beta1 import TxResponse
 from .config import AppEnvConfig
 from .database import Database, Task
