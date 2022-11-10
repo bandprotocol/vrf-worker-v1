@@ -9,11 +9,6 @@ class CreateTask:
     """The class contains a method to create a new task on GCP Cloud Tasks."""
 
     def __init__(self, _config: CreateTaskConfig) -> None:
-        """Sets config from AppEnvConfig class.
-
-        Args:
-            _config (Type[AppEnvConfig]): Class AppEnvConfig
-        """
         self.config = _config
 
     def create_new_task(self) -> None:

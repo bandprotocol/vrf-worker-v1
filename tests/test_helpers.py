@@ -1,11 +1,11 @@
 import pytest
-from app.helpers import Helpers, AppEnvConfig, Web3Interactor, BandInteractor
+from app.helpers import Helpers, Web3Interactor, BandInteractor, EvmChainConfig, BandChainConfig
 from .mock_data import *
 
 
 @pytest.fixture
 def helpers():
-    return Helpers(AppEnvConfig, Web3Interactor, BandInteractor)
+    return Helpers(EvmChainConfig, BandChainConfig, Web3Interactor, BandInteractor)
 
 
 def test_extract_request_id_from_request_tx(helpers):

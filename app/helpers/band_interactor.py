@@ -1,4 +1,3 @@
-from typing import Type
 from pyband import Client
 from pyband.wallet import PrivateKey
 from pyband.transaction import Transaction
@@ -7,23 +6,25 @@ from pyband.proto.cosmos.base.v1beta1 import Coin
 from pyband.proto.cosmos.base.abci.v1beta1 import TxResponse
 from pyband.messages.oracle.v1 import MsgRequestData
 from pyband.transaction import Transaction
-from .config import AppEnvConfig
+from eth_account.signers.local import LocalAccount
+from .config import BandChainConfig
 from .database import Task
 
 
 class BandInteractor:
     """This class contains methods that interact with the BandChain Client."""
 
-    def __init__(self, _config: AppEnvConfig) -> None:
+    def __init__(self, _config: BandChainConfig) -> None:
         self.config = _config
 
         # BandChain settings
         self.band_private_key = PrivateKey.from_mnemonic(self.config.BAND_MNEMONIC)
         self.band_public_key = self.band_private_key.to_public_key()
         self.band_requester_address = self.band_public_key.to_address()
-        self.band_client = Client.from_endpoint(self.config.BAND_RPC[0], self.config.BAND_RPC_PORT)
+        band_grpc_url, band_grpc_port = tuple(self.config.BAND_GRPC_ENDPOINTS[0].split(":"))
+        self.band_client = Client.from_endpoint(band_grpc_url, band_grpc_port)
 
-    async def check_band_rpc(self) -> bool:
+    async def check_band_grpc(self) -> bool:
         """Checks if BandChain RPC endpoint is connected and working.
 
         Returns:
@@ -46,20 +47,25 @@ class BandInteractor:
             Exception: No working RPC endpoint for BandChain found
         """
         try:
-            if not await self.check_band_rpc():
-                for rpc in self.config.BAND_RPC:
-                    self.band_client = Client.from_endpoint(rpc, self.config.BAND_RPC_PORT)
-                    if await self.check_band_rpc():
-                        return
+            if not await self.check_band_grpc():
+                for grpc in self.config.BAND_GRPC_ENDPOINTS[1:]:
+                    try:
+                        grpc_url, grpc_port = tuple(grpc.split(":"))
+                        self.band_client = Client.from_endpoint(grpc_url, grpc_port)
+                        if await self.check_band_grpc():
+                            return
+                    except Exception as e:
+                        print(f"Bad endpoint - {grpc} - {e}")
+                        continue
 
-                raise Exception("No working RPC endpoints for BandChain")
+                raise Exception("No working GRPC endpoints for BandChain")
 
         except Exception as e:
             print("Error set_band_client", e)
             raise
 
     async def get_request_tx_data(
-        self, oracle_script_id: int, min_count: int, ask_count: int, task: Task, worker
+        self, oracle_script_id: int, min_count: int, ask_count: int, task: Task, worker: LocalAccount
     ) -> "Transaction":
         """Retrieves the BandChain transaction data.
 
@@ -68,7 +74,7 @@ class BandInteractor:
             min_count (int): Min count.
             ask_count (int): Ask count.
             task (Task): Task.
-            worker (_type_): Worker object.
+            worker (LocalAccount): Worker object.
 
         Returns:
             Transaction: Transaction data.
@@ -93,8 +99,8 @@ class BandInteractor:
                         ask_count=ask_count,
                         min_count=min_count,
                         client_id="vrf_worker",
-                        prepare_gas=50000,
-                        execute_gas=200000,
+                        prepare_gas=self.config.BAND_PREPARE_GAS,
+                        execute_gas=self.config.BAND_EXECUTE_GAS,
                         sender=band_requester_address_bech32,
                     )
                 )

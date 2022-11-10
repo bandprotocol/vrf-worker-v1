@@ -1,12 +1,12 @@
 import requests
-from typing import Type
-from .config import AppEnvConfig
+from .config import EvmChainConfig, NotificationConfig
 from .database import Database
 
 
 class ErrorHandler:
-    def __init__(self, _config: Type[AppEnvConfig]) -> None:
-        self.config = _config
+    def __init__(self, _evm_config: EvmChainConfig, _notification_config: NotificationConfig) -> None:
+        self.notification_config = _notification_config
+        self.evm_config = _evm_config
 
     def check_error_limit(self, error_count: int) -> None:
         """Checks the error count.
@@ -18,8 +18,8 @@ class ErrorHandler:
         """
         try:
             if error_count == 3:
-                message = f"<{self.config.CHAIN}> VRF Worker failed to run multiple times!"
-                ErrorHandler.send_notification_to_discord(self.config.DISCORD_WEBHOOK, message)
+                message = f"<{self.evm_config.CHAIN}> VRF Worker failed to run multiple times!"
+                ErrorHandler.send_notification_to_discord(self.notification_config.DISCORD_WEBHOOK, message)
 
         except Exception as e:
             print("Error check_error_count", e)

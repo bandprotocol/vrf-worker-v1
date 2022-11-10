@@ -3,7 +3,7 @@ from typing import List, Tuple, Dict, Type, Union
 from web3 import Web3, HTTPProvider
 from web3._utils.abi import get_abi_input_types
 from web3.middleware import geth_poa_middleware
-from .config import AppEnvConfig, Abi
+from .config import EvmChainConfig, Abi
 from .database import Task
 
 # Custom typings
@@ -15,16 +15,15 @@ Web3Tx = Dict[str, Union[str, int]]
 class Web3Interactor:
     """The class contains methods that interact with web3"""
 
-    def __init__(self, _config: AppEnvConfig, _abi: Abi) -> None:
+    def __init__(self, _config: EvmChainConfig, _abi: Abi) -> None:
         self.config = _config
         self.abi = _abi
 
         # Client chain (EVM) settings
-        self.web3 = Web3(HTTPProvider(self.config.JSON_RPC_ENDPOINT[0]))
+        self.web3 = Web3(HTTPProvider(self.config.EVM_JSON_RPC_ENDPOINTS[0]))
         self.set_web3()
 
-        if self.config.POA_CHAIN:
-            self.web3.middleware_onion.inject(geth_poa_middleware, layer=0)
+        self.web3.middleware_onion.inject(geth_poa_middleware, layer=0)
         self.worker = self.web3.eth.account.from_key(self.config.WORKER_PK)
         self.provider_contract = self.web3.eth.contract(
             address=self.web3.toChecksumAddress(self.config.VRF_PROVIDER_ADDRESS), abi=self.abi.VRF_PROVIDER_ABI
@@ -51,10 +50,14 @@ class Web3Interactor:
         """
         try:
             if not self.web3.isConnected():
-                for rpc in self.config.JSON_RPC_ENDPOINT:
-                    self.web3 = Web3(HTTPProvider(rpc))
-                    if self.web3.isConnected():
-                        return
+                for rpc in self.config.EVM_JSON_RPC_ENDPOINTS[1:]:
+                    try:
+                        self.web3 = Web3(HTTPProvider(rpc))
+                        if self.web3.isConnected():
+                            return
+                    except Exception as e:
+                        print(f"Bad endpoint - {rpc} - {e}")
+                        continue
 
                 raise Exception("No working RPC endpoints for Client chain")
 
@@ -173,15 +176,16 @@ class Web3Interactor:
             if self.config.SUPPORT_EIP1559:
                 return self.provider_contract.functions.relayProof(proof, task.nonce).build_transaction(
                     {
-                        "gas": 1200000,
+                        "gas": self.config.MAX_RELAY_PROOF_GAS,
                         "from": self.worker.address,
                         "nonce": self.web3.eth.get_transaction_count(self.worker.address),
+                        "maxPriorityFeePerGas": self.web3.eth.max_priority_fee,
                     }
                 )
             else:
                 return self.provider_contract.functions.relayProof(proof, task.nonce).build_transaction(
                     {
-                        "gas": 1200000,
+                        "gas": self.config.MAX_RELAY_PROOF_GAS,
                         "from": self.worker.address,
                         "nonce": self.web3.eth.get_transaction_count(self.worker.address),
                         "gasPrice": self.web3.eth.gas_price,

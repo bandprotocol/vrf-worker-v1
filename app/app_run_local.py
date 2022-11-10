@@ -2,7 +2,7 @@ import asyncio
 import time
 from flask import Flask
 from func_timeout import FunctionTimedOut
-from helpers.config import DbConfig, AppEnvConfig, Abi
+from helpers.config import EvmChainConfig, BandChainConfig, DbConfig, Abi
 from helpers.database import Database
 from helpers.helpers import Helpers
 from helpers.web3_interactor import Web3Interactor
@@ -32,7 +32,8 @@ async def run_vrf_worker_local() -> None:
     app = Flask(__name__)
     app.config.from_object(DbConfig())
     db = Database(app)
-    app_env_config = AppEnvConfig()
+    evm_chain_config = EvmChainConfig()
+    band_chain_config = BandChainConfig()
     abi = Abi()
 
     prev_block = 0
@@ -40,10 +41,10 @@ async def run_vrf_worker_local() -> None:
 
     while True:
         try:
-            web3_interactor = Web3Interactor(app_env_config, abi)
-            band_interactor = BandInteractor(app_env_config)
+            web3_interactor = Web3Interactor(evm_chain_config, abi)
+            band_interactor = BandInteractor(band_chain_config)
             await band_interactor.set_band_client()
-            helpers = Helpers(app_env_config, web3_interactor, band_interactor)
+            helpers = Helpers(evm_chain_config, band_chain_config, web3_interactor, band_interactor)
 
             error_count = ErrorHandler.current_error_count(db)
             print(f"Error count: {error_count}")

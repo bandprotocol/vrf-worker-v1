@@ -2,7 +2,7 @@ import asyncio
 import time
 from aioflask import Flask
 from func_timeout import FunctionTimedOut
-from helpers.config import DbConfig, AppEnvConfig, CreateTaskConfig, Abi
+from helpers.config import CreateTaskConfig, EvmChainConfig, BandChainConfig, DbConfig, Abi, NotificationConfig
 from helpers.create_task import CreateTask
 from helpers.database import Database
 from helpers.helpers import Helpers
@@ -13,9 +13,11 @@ from helpers.error_handler import ErrorHandler
 app = Flask(__name__)
 app.config.from_object(DbConfig())
 db = Database(app)
-app_env_config = AppEnvConfig()
+evm_chain_config = EvmChainConfig()
+band_chain_config = BandChainConfig()
 abi = Abi()
 create_task_config = CreateTaskConfig()
+notifiaction_config = NotificationConfig()
 
 prev_block = None
 
@@ -50,11 +52,11 @@ async def run_vrf_worker() -> tuple[str, int]:
     try:
         global prev_block
 
-        error_handler = ErrorHandler(app_env_config)
-        web3_interactor = Web3Interactor(app_env_config, abi)
-        band_interactor = BandInteractor(app_env_config)
+        error_handler = ErrorHandler(evm_chain_config, notifiaction_config)
+        web3_interactor = Web3Interactor(evm_chain_config, abi)
+        band_interactor = BandInteractor(band_chain_config)
         await band_interactor.set_band_client()
-        helpers = Helpers(app_env_config, web3_interactor, band_interactor)
+        helpers = Helpers(evm_chain_config, band_chain_config, web3_interactor, band_interactor)
 
         db.create_all()
         error_count = ErrorHandler.current_error_count(db)
@@ -85,7 +87,7 @@ async def run_vrf_worker() -> tuple[str, int]:
         return "Success", 200
 
     except (Exception, FunctionTimedOut) as e:
-        message = f"<{AppEnvConfig.CHAIN}> Error running VRF Worker"
+        message = f"<{evm_chain_config.CHAIN}> Error running VRF Worker"
         print(f"{message}: {e}")
 
         error_count = ErrorHandler.current_error_count(db) + 1
@@ -99,4 +101,4 @@ async def run_vrf_worker() -> tuple[str, int]:
 
 
 if __name__ == "__main__":
-    asyncio.run(app.run(debug=True, host=AppEnvConfig.HOST, port=AppEnvConfig.PORT))
+    asyncio.run(app.run(debug=True, host="0.0.0.0", port=8080))

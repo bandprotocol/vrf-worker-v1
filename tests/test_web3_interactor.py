@@ -1,11 +1,11 @@
 import pytest
-from app.helpers import AppEnvConfig, Web3Interactor, Abi
+from app.helpers import Web3Interactor, Abi
 from .mock_data import *
 
 
 @pytest.fixture
 def web3_interactor():
-    return Web3Interactor(AppEnvConfig, Abi)
+    return Web3Interactor(MockEvmChainConfig, Abi)
 
 
 def test_recover_addresses(web3_interactor):

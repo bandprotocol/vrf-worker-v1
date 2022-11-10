@@ -2,9 +2,9 @@ import json
 import requests
 import time
 from func_timeout import func_timeout, FunctionTimedOut
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 from pyband.proto.cosmos.base.abci.v1beta1 import TxResponse
-from .config import AppEnvConfig
+from .config import EvmChainConfig, BandChainConfig
 from .database import Database, Task
 from .web3_interactor import Web3Interactor
 from .band_interactor import BandInteractor
@@ -15,17 +15,13 @@ class Helpers:
 
     def __init__(
         self,
-        _config: AppEnvConfig,
+        _evm_chain_config: EvmChainConfig,
+        _band_chain_config: BandChainConfig,
         _web3_interactor: Web3Interactor,
         _band_interactor: BandInteractor,
     ) -> None:
-        """Sets config from AppEnvConfig classes. Sets
-        BandChain and web3 settings according to the config.
-
-        Args:
-            _config (Type[AppEnvConfig]): Class AppEnvConfig
-        """
-        self.config = _config
+        self.evm_chain_config = _evm_chain_config
+        self.band_chain_config = _band_chain_config
         self.web3_interactor = _web3_interactor
         self.band_interactor = _band_interactor
 
@@ -44,7 +40,7 @@ class Helpers:
         try:
             nonce_from_contract = self.web3_interactor.get_current_task_nonce_from_vrf_provider()
             latest_task_from_db = db.get_latest_task_by_nonce()
-            start_nonce = self.config.START_NONCE
+            start_nonce = self.evm_chain_config.START_NONCE
 
             if latest_task_from_db is not None:
                 start_nonce = latest_task_from_db.nonce
@@ -64,7 +60,7 @@ class Helpers:
 
             try:
                 for t in new_tasks:
-                    if t.caller in self.config.WHITELISTED_CALLERS:
+                    if t.caller in self.evm_chain_config.WHITELISTED_CALLERS:
                         db.add_new_task_if_not_existed(t, current_block)
 
                 db.session.commit()
@@ -228,7 +224,7 @@ class Helpers:
         """
         try:
             print("---------------------------------------------------------")
-            tasks_to_fork_check = db.get_tasks_to_fork_check(current_block, 0, 100, AppEnvConfig)
+            tasks_to_fork_check = db.get_tasks_to_fork_check(current_block, 0, 100, self.evm_chain_config.BLOCK_DIFF)
             print("Tasks to fork check:", tasks_to_fork_check)
             nonces_to_check = [t.nonce for t in tasks_to_fork_check]
             tasks_on_chain = self.web3_interactor.get_tasks_by_nonces(nonces_to_check)
@@ -289,7 +285,8 @@ class Helpers:
         Returns:
             Tuple[int, str]: Block height and the corresponding block hash.
         """
-        url = f"{self.config.BAND_RPC_BLOCK}/block" + ("" if block_height is None else f"?height={block_height + 1}")
+        block_endpoint = self.get_working_endpoint(self.band_chain_config.BAND_RPC_ENDPOINTS, "block")
+        url = f"{block_endpoint}/block" + ("" if block_height is None else f"?height={block_height + 1}")
         try:
             r = requests.get(url).json()
             current_height = int(r["result"]["block"]["header"]["height"]) - 1
@@ -299,6 +296,39 @@ class Helpers:
         except Exception as e:
             print("Failed to get block:", e)
             raise
+
+    def check_endpoint(self, url: str) -> bool:
+        """Checks if the endpoint is working.
+
+        Args:
+            url (str): endpoint url
+
+        Returns:
+            bool: True if the endpoint is working.
+        """
+        res = requests.get(url)
+        return res.status_code == 200
+
+    def get_working_endpoint(self, endpoints: List[str], path: str) -> str:
+        """Sets a working endpoint.
+
+        Args:
+            endpoints (List[str]): A list of endpoints.
+            path (str): Path.
+
+        Raises:
+            Exception: No working endpoints.
+
+        Returns:
+            str: A working endpoint.
+        """
+        for endpoint in endpoints:
+            try:
+                if self.check_endpoint(f"{endpoint}/{path}"):
+                    return endpoint
+            except Exception:
+                continue
+        raise Exception("No working endpoints")
 
     def try_get_request_proof_by_id(self, req_id: int) -> Tuple[bytes, int]:
         """Retrieves proof from BandChain for a specified request ID.
@@ -321,14 +351,12 @@ class Helpers:
             Tuple[bytes, int]: EVM proof bytes and block height
         """
         try:
+            proof_endpoint = self.get_working_endpoint(self.band_chain_config.BAND_PROOF_URLS, "1")
+
             count = 1
             while count <= 10:
                 try:
-                    height = int(
-                        requests.get(f"{self.config.BAND_PROOF_URL}/{req_id}").json()["result"]["proof"][
-                            "block_height"
-                        ]
-                    )
+                    height = int(requests.get(f"{proof_endpoint}/{req_id}").json()["result"]["proof"]["block_height"])
                     break
                 except Exception as e:
                     print("Get proof attempt ", count)
@@ -350,9 +378,7 @@ class Helpers:
             count = 1
             while count <= 10:
                 return (
-                    requests.get(f"{self.config.BAND_PROOF_URL}/{req_id}?height={height}").json()["result"][
-                        "evm_proof_bytes"
-                    ],
+                    requests.get(f"{proof_endpoint}/{req_id}?height={height}").json()["result"]["evm_proof_bytes"],
                     height,
                 )
             count += 1
