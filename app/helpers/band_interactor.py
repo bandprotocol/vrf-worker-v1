@@ -46,23 +46,18 @@ class BandInteractor:
         Raises:
             Exception: No working RPC endpoint for BandChain found
         """
-        try:
-            if not await self.check_band_grpc():
-                for grpc in self.config.BAND_GRPC_ENDPOINTS[1:]:
-                    try:
-                        grpc_url, grpc_port = tuple(grpc.split(":"))
-                        self.band_client = Client.from_endpoint(grpc_url, grpc_port)
-                        if await self.check_band_grpc():
-                            return
-                    except Exception as e:
-                        print(f"Bad endpoint - {grpc} - {e}")
-                        continue
+        if not await self.check_band_grpc():
+            for grpc in self.config.BAND_GRPC_ENDPOINTS[1:]:
+                try:
+                    grpc_url, grpc_port = tuple(grpc.split(":"))
+                    self.band_client = Client.from_endpoint(grpc_url, grpc_port)
+                    if await self.check_band_grpc():
+                        return
+                except Exception as e:
+                    print(f"Bad endpoint - {grpc} - {e}")
+                    continue
 
-                raise Exception("No working GRPC endpoints for BandChain")
-
-        except Exception as e:
-            print("Error set_band_client", e)
-            raise
+            raise Exception("No working GRPC endpoints for BandChain")
 
     async def get_request_tx_data(
         self, oracle_script_id: int, min_count: int, ask_count: int, task: Task, worker: LocalAccount

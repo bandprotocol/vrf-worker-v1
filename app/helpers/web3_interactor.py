@@ -48,22 +48,17 @@ class Web3Interactor:
         Raises:
             Exception: No working JSON RPC endpoint for Client chain found.
         """
-        try:
-            if not self.web3.isConnected():
-                for rpc in self.config.EVM_JSON_RPC_ENDPOINTS[1:]:
-                    try:
-                        self.web3 = Web3(HTTPProvider(rpc))
-                        if self.web3.isConnected():
-                            return
-                    except Exception as e:
-                        print(f"Bad endpoint - {rpc} - {e}")
-                        continue
+        if not self.web3.isConnected():
+            for rpc in self.config.EVM_JSON_RPC_ENDPOINTS[1:]:
+                try:
+                    self.web3 = Web3(HTTPProvider(rpc))
+                    if self.web3.isConnected():
+                        return
+                except Exception as e:
+                    print(f"Bad endpoint - {rpc} - {e}")
+                    continue
 
-                raise Exception("No working RPC endpoints for Client chain")
-
-        except Exception as e:
-            print("Error set_web3:", e)
-            raise
+            raise Exception("No working RPC endpoints for Client chain")
 
     def get_block_number(self) -> int:
         """Retrieves the current block number from the client chain.
@@ -114,11 +109,16 @@ class Web3Interactor:
             List[Task]: A list of VRF request tasks
         """
         try:
-            tasks = self.lens_contract.functions.getTasksBulk(nonces).call()
-            return [
-                Task(*[e.hex() if type(e) is bytes else e for e in [n] + list(t)[:7] + [0]])
-                for n, t in zip(nonces, tasks)
-            ]
+            lens_tasks = self.lens_contract.functions.getTasksBulk(nonces).call()
+
+            # Convert any values with type bytes to hex
+            lens_tasks_hex = [[e.hex() if type(e) is bytes else e for e in task] for task in lens_tasks]
+
+            # Convert from Lens tasks format to database tasks format
+            database_tasks = [[nonce] + list(task)[:7] + [False] for nonce, task in zip(nonces, lens_tasks_hex)]
+
+            return [Task(*task) for task in database_tasks]
+
         except Exception as e:
             print("Error get_tasks_by_nonces:", e)
             raise

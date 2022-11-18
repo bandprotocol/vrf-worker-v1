@@ -286,9 +286,10 @@ class Helpers:
             Tuple[int, str]: Block height and the corresponding block hash.
         """
         block_endpoint = self.get_working_endpoint(self.band_chain_config.BAND_RPC_ENDPOINTS, "block")
-        url = f"{block_endpoint}/block" + ("" if block_height is None else f"?height={block_height + 1}")
         try:
-            r = requests.get(url).json()
+            r = requests.get(
+                f"{block_endpoint}/block", params={"height": None if block_height is None else block_height + 1}
+            ).json()
             current_height = int(r["result"]["block"]["header"]["height"]) - 1
             current_hash = r["result"]["block"]["header"]["last_block_id"]["hash"]
             return current_height, current_hash
