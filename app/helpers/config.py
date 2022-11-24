@@ -29,6 +29,7 @@ class BandChainConfig:
     WORKER_FEE_BAND = os.getenv("WORKER_FEE_BAND", 5000)
     BAND_PREPARE_GAS = int(os.getenv("BAND_PREPARE_GAS", 50000))
     BAND_EXECUTE_GAS = int(os.getenv("BAND_EXECUTE_GAS", 200000))
+    BAND_GAS_LIMIT = int(os.getenv("BAND_GAS_LIMIT", 800000))
 
 
 @dataclass

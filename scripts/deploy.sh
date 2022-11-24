@@ -15,6 +15,7 @@ export BAND_RPC_ENDPOINTS=https://rpc.laozi-testnet6.bandchain.org
 export BAND_PROOF_URLS=https://laozi-testnet6.bandchain.org/api/oracle/proof/
 export BAND_PREPARE_GAS=50000
 export BAND_EXECUTE_GAS=200000
+export BAND_GAS_LIMIT=800000
 export VRF_PROVIDER_ADDRESS=
 export VRF_LENS_ADDRESS=
 export BRIDGE_ADDRESS=
@@ -59,6 +60,7 @@ gcloud run deploy $SERVICE_NAME \
     --set-env-vars "^##^BAND_PROOF_URLS=$BAND_PROOF_URLS" \
     --set-env-vars BAND_PREPARE_GAS=$BAND_PREPARE_GAS \
     --set-env-vars BAND_EXECUTE_GAS=$BAND_EXECUTE_GAS \
+    --set-env-vars BAND_GAS_LIMIT=$BAND_GAS_LIMIT \
     --set-env-vars VRF_PROVIDER_ADDRESS=$VRF_PROVIDER_ADDRESS \
     --set-env-vars VRF_LENS_ADDRESS=$VRF_LENS_ADDRESS \
     --set-env-vars BRIDGE_ADDRESS=$BRIDGE_ADDRESS \

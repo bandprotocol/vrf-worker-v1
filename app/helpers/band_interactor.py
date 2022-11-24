@@ -102,7 +102,7 @@ class BandInteractor:
                 .with_sequence(account.sequence)
                 .with_account_num(account.account_number)
                 .with_chain_id(await self.band_client.get_chain_id())
-                .with_gas(2000000)
+                .with_gas(self.config.BAND_GAS_LIMIT)
                 .with_fee([Coin(amount=self.config.WORKER_FEE_BAND, denom="uband")])
                 .with_memo("")
             )
