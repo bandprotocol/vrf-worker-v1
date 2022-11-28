@@ -27,9 +27,11 @@ class BandChainConfig:
     BAND_PROOF_URLS = os.getenv("BAND_PROOF_URLS", "https://laozi-testnet6.bandchain.org/api/oracle/proof").split(",")
     BAND_MNEMONIC = os.getenv("BAND_MNEMONIC")
     WORKER_FEE_BAND = os.getenv("WORKER_FEE_BAND", 5000)
-    BAND_PREPARE_GAS = int(os.getenv("BAND_PREPARE_GAS", 50000))
-    BAND_EXECUTE_GAS = int(os.getenv("BAND_EXECUTE_GAS", 200000))
+    BAND_PREPARE_GAS = int(os.getenv("BAND_PREPARE_GAS", 100000))
+    BAND_EXECUTE_GAS = int(os.getenv("BAND_EXECUTE_GAS", 400000))
     BAND_GAS_LIMIT = int(os.getenv("BAND_GAS_LIMIT", 800000))
+    MIN_COUNT = int(os.getenv("MIN_COUNT", 2))
+    ASK_COUNT = int(os.getenv("ASK_COUNT", 3))
 
 
 @dataclass
@@ -87,20 +89,16 @@ class Abi:
             "stateMutability": "view",
             "type": "function",
         },
-    ]
-
-    VRF_LENS_ABI = [
         {
             "inputs": [],
-            "name": "getProviderConfig",
-            "outputs": [
-                {"internalType": "uint64", "name": "", "type": "uint64"},
-                {"internalType": "uint8", "name": "", "type": "uint8"},
-                {"internalType": "uint8", "name": "", "type": "uint8"},
-            ],
+            "name": "oracleScriptID",
+            "outputs": [{"internalType": "uint64", "name": "", "type": "uint64"}],
             "stateMutability": "view",
             "type": "function",
         },
+    ]
+
+    VRF_LENS_ABI = [
         {
             "inputs": [{"internalType": "uint64[]", "name": "nonces", "type": "uint64[]"}],
             "name": "getTasksBulk",
@@ -112,11 +110,10 @@ class Abi:
                         {"internalType": "address", "name": "caller", "type": "address"},
                         {"internalType": "uint256", "name": "taskFee", "type": "uint256"},
                         {"internalType": "bytes32", "name": "seed", "type": "bytes32"},
+                        {"internalType": "bytes32", "name": "result", "type": "bytes32"},
                         {"internalType": "string", "name": "clientSeed", "type": "string"},
-                        {"internalType": "bytes", "name": "proof", "type": "bytes"},
-                        {"internalType": "bytes", "name": "result", "type": "bytes"},
                     ],
-                    "internalType": "struct VRFProviderBase.Task[]",
+                    "internalType": "struct VRFLensV2.Task[]",
                     "name": "",
                     "type": "tuple[]",
                 }

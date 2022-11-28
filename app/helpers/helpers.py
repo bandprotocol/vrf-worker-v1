@@ -172,7 +172,7 @@ class Helpers:
             db (Database): Database object for interacting with the SQL database.
         """
         try:
-            oracle_script_id, min_count, ask_count = self.web3_interactor.get_vrf_provider_config()
+            oracle_script_id = self.web3_interactor.get_oracle_script_id()
             worker = self.web3_interactor.get_worker()
             unknown_status_tasks = db.get_unresolved_tasks(0, 100)
 
@@ -190,7 +190,7 @@ class Helpers:
                         raise
 
                 tx = await self.band_interactor.get_request_tx_data(
-                    oracle_script_id, min_count, ask_count, task, worker
+                    oracle_script_id, self.band_chain_config.MIN_COUNT, self.band_chain_config.ASK_COUNT, task, worker
                 )
                 tx_block = await self.band_interactor.sign_and_broadcast_tx(tx)
                 request_id = self.extract_request_id_from_request_tx(tx_block)

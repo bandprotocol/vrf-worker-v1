@@ -85,18 +85,16 @@ class Web3Interactor:
             print("Error get_current_task_nonce_from_vrf_provider:", e)
             raise
 
-    def get_vrf_provider_config(self) -> Tuple[int, int, int]:
-        """Retrieves Oracle Script configurations of the VRF Provider contract.
+    def get_oracle_script_id(self) -> int:
+        """Retrieves Oracle Script ID from the VRF Provider contract.
 
         Returns:
-            Tuple[int, int, int]: Oracle Script ID, validators minimum count, and
-            validators ask count.
+            Int: Oracle Script ID
         """
         try:
-            oracle_script_id, min_count, ask_count = self.lens_contract.functions.getProviderConfig().call()
-            return oracle_script_id, min_count, ask_count
+            return self.provider_contract.functions.oracleScriptID().call()
         except Exception as e:
-            print("Error get_vrf_provider_config:", e)
+            print("Error get_oracle_script_id:", e)
             raise
 
     def get_tasks_by_nonces(self, nonces: List[int]) -> List[Task]:
@@ -115,7 +113,9 @@ class Web3Interactor:
             lens_tasks_hex = [[e.hex() if type(e) is bytes else e for e in task] for task in lens_tasks]
 
             # Convert from Lens tasks format to database tasks format
-            database_tasks = [[nonce] + list(task)[:7] + [False] for nonce, task in zip(nonces, lens_tasks_hex)]
+            database_tasks = [
+                [nonce] + list(task)[:5] + [task[6], None, None] for nonce, task in zip(nonces, lens_tasks_hex)
+            ]
 
             return [Task(*task) for task in database_tasks]
 
