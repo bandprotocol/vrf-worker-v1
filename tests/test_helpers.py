@@ -1,11 +1,11 @@
 import pytest
-from app.helpers import Helpers, AppEnvConfig, Abi
+from app.helpers import Helpers, Web3Interactor, BandInteractor, EvmChainConfig, BandChainConfig
 from .mock_data import *
 
 
 @pytest.fixture
 def helpers():
-    return Helpers(AppEnvConfig, Abi)
+    return Helpers(EvmChainConfig, BandChainConfig, Web3Interactor, BandInteractor)
 
 
 def test_extract_request_id_from_request_tx(helpers):
@@ -27,10 +27,3 @@ def test_extract_request_id_from_request_tx_fails(helpers):
     with pytest.raises(Exception) as e:
         helpers.extract_request_id_from_request_tx(tx)
     assert str(e.value) == "Cannot find request id"
-
-
-def test_recover_addresses(helpers):
-    result = helpers.recover_addresses(
-        mock_3["arg"]["common"], mock_3["arg"]["signatures"], mock_3["arg"]["encoded_band_chain_id"]
-    )
-    assert result == mock_3["output"]["list_of_addr_and_sig"]

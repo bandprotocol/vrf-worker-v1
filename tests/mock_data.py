@@ -1,3 +1,17 @@
+class MockEvmChainConfig:
+    CHAIN = "Goerli"
+    SUPPORT_EIP1559 = True
+    EVM_JSON_RPC_ENDPOINTS = ["https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"]
+    VRF_PROVIDER_ADDRESS = "0xF1F3554b6f46D8f172c89836FBeD1ea8551eabad"
+    VRF_LENS_ADDRESS = "0x6e876b4Ed458af275Eb049a3f89BF0909618d154"
+    BRIDGE_ADDRESS = "0xD291A502e3ca4Bb13E09892e57d8Ff0271Bd198A"
+    WORKER_PK = "123456789123456789123456789123456789123456789123456789d123456789"
+    START_NONCE = 0
+    WHITELISTED_CALLERS = ""
+    BLOCK_DIFF = 0
+    MAX_RELAY_PROOF_GAS = 0
+
+
 # extract_request_id_from_request_tx
 mock_1 = {
     "raw_log": '[{"events":[{"type":"message","attributes":[{"key":"action","value":"/oracle.v1.MsgRequestData"}]},{"type":"raw_request","attributes":[{"key":"data_source_id","value":"84"},{"key":"data_source_hash","value":"d7a32a142d016fa51b979051b56a83759a7c5afb838e260594ba17c0a70f6621"},{"key":"external_id","value":"1"},{"key":"calldata","value":"61c602247721b14eac135379ed5e43d73d499101fd15fda55006633b339b78ee 1665454656"},{"key":"fee"}]},{"type":"request","attributes":[{"key":"id","value":"628823"},{"key":"client_id","value":"vrf_worker"},{"key":"oracle_script_id","value":"152"},{"key":"calldata","value":"0000002061c602247721b14eac135379ed5e43d73d499101fd15fda55006633b339b78ee000000006344d24000000014ff1514e5a4e71702e4390cd160c33f30b529f881"},{"key":"ask_count","value":"16"},{"key":"min_count","value":"10"},{"key":"gas_used","value":"26019"},{"key":"total_fees"},{"key":"validator","value":"bandvaloper1ym02hqj8e2c8qlw250zsjdjmvr5zfj5jz92w3v"},{"key":"validator","value":"bandvaloper132sxwpky0ptqtckgv9hnyqmd78t3xnyrg6w9hg"},{"key":"validator","value":"bandvaloper17v4tlepulhfvsr37lja4sf0alla582qazjrjm9"},{"key":"validator","value":"bandvaloper14plrcrdtphtzvqfyewcpztnuxgwukqad9mtwtv"},{"key":"validator","value":"bandvaloper1e6q8nskt5undr02ngq23atcu3mgvhxjpt0mwsu"},{"key":"validator","value":"bandvaloper16nzl5wrqwltvyhjefse0f4lyk9hp25mfqvkqx6"},{"key":"validator","value":"bandvaloper16mp6ey8ljqgtjxv93mwxu3ucfdnprt92z6hexh"},{"key":"validator","value":"bandvaloper1kfj48adjsnrgu83lau6wc646q2uf65rf84tzus"},{"key":"validator","value":"bandvaloper1yqlcv0azkvp2qal4zxcranfpxzq8rvs9gcfwhg"},{"key":"validator","value":"bandvaloper1lylssnp38wcxke592d7ethzzr4av273yu5xy3u"},{"key":"validator","value":"bandvaloper1xwrry9srz20qffrsnukw5zrnd4l2unzu9u766n"},{"key":"validator","value":"bandvaloper1uhvf525vsz0kqs757m744netzs6jkgm67e8wuk"},{"key":"validator","value":"bandvaloper1kxqs9pguxj2awqfl6r837e8kd5affw9gffxz0h"},{"key":"validator","value":"bandvaloper1d8265yjy7zlnxy0q49kpr0x0xf8mc9etc73lta"},{"key":"validator","value":"bandvaloper1d3z2x5kkppps6gcfy54m9qyjc4z7rydxaeex47"},{"key":"validator","value":"bandvaloper1hyjftngre6txc4hscty43yc4kay9zw9qp7h2sh"}]}]}]',

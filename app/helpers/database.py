@@ -154,7 +154,7 @@ class Database(SQLAlchemy):
             print(f"Error resolve_task - task {nonce}:", e)
             raise
 
-    def get_tasks_to_fork_check(self, current_block: int, offset: int, limit: int, config) -> List[Task]:
+    def get_tasks_to_fork_check(self, current_block: int, offset: int, limit: int, block_diff: int) -> List[Task]:
         """Retrieves a list of tasks to be checked for chain fork.
 
         Args:
@@ -169,7 +169,7 @@ class Database(SQLAlchemy):
             return (
                 self.session.query(self.ProviderTasks)
                 .filter_by(fork_checked=False)
-                .filter(self.ProviderTasks.resolved_block_height < current_block - config.BLOCK_DIFF)
+                .filter(self.ProviderTasks.resolved_block_height < current_block - block_diff)
                 .order_by(self.ProviderTasks.nonce.asc())
                 .offset(offset)
                 .limit(limit)

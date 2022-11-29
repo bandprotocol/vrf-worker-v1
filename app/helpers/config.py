@@ -1,33 +1,45 @@
+from dataclasses import dataclass
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
-class AppEnvConfig:
-    RUN_LOCAL = os.getenv("RUN_LOCAL", "True").lower() == "true"
+@dataclass
+class EvmChainConfig:
     CHAIN = os.getenv("CHAIN")
-    POA_CHAIN = os.getenv("POA_CHAIN").lower() == "true"
-    PORT = int(os.getenv("PORT", 8080))
-    HOST = os.getenv("HOST", "0.0.0.0")
-    JSON_RPC_ENDPOINT = os.getenv("JSON_RPC_ENDPOINT").split(",")
-    BAND_RPC = os.getenv("BAND_RPC", "laozi-testnet5.bandchain.org").split(",")
-    BAND_RPC_PORT = int(os.getenv("BAND_RPC_PORT", 443))
-    BAND_RPC_BLOCK = os.getenv("BAND_RPC_BLOCK", "https://rpc.laozi-testnet5.bandchain.org")
-    BAND_PROOF_URL = os.getenv("BAND_PROOF_URL", "https://laozi-testnet5.bandchain.org/api/oracle/proof")
+    SUPPORT_EIP1559 = os.getenv("SUPPORT_EIP1559", "False").lower() == "true"
+    EVM_JSON_RPC_ENDPOINTS = os.getenv("EVM_JSON_RPC_ENDPOINTS", "").split(",")
     VRF_PROVIDER_ADDRESS = os.getenv("VRF_PROVIDER_ADDRESS")
     VRF_LENS_ADDRESS = os.getenv("VRF_LENS_ADDRESS")
     BRIDGE_ADDRESS = os.getenv("BRIDGE_ADDRESS")
     WORKER_PK = os.getenv("WORKER_PK")
     START_NONCE = int(os.getenv("START_NONCE", 0))
-    BAND_MNEMONIC = os.getenv("BAND_MNEMONIC")
-    DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK")
-    WHITELISTED_CALLERS = set(os.getenv("WHITELISTED_CALLERS").split(","))
-    WORKER_FEE_BAND = os.getenv("WORKER_FEE_BAND", "0")
+    WHITELISTED_CALLERS = set(os.getenv("WHITELISTED_CALLERS", "").split(","))
     BLOCK_DIFF = int(os.getenv("BLOCK_DIFF", 10))
-    SUPPORT_EIP1559 = os.getenv("SUPPORT_EIP1559", "False").lower() == "true"
+    MAX_RELAY_PROOF_GAS = int(os.getenv("MAX_RELAY_PROOF_GAS", 1200000))
 
 
+@dataclass
+class BandChainConfig:
+    BAND_GRPC_ENDPOINTS = os.getenv("BAND_GRPC_ENDPOINTS", "laozi-testnet6.bandchain.org:443").split(",")
+    BAND_RPC_ENDPOINTS = os.getenv("BAND_RPC_ENDPOINTS", "https://rpc.laozi-testnet6.bandchain.org").split(",")
+    BAND_PROOF_URLS = os.getenv("BAND_PROOF_URLS", "https://laozi-testnet6.bandchain.org/api/oracle/proof").split(",")
+    BAND_MNEMONIC = os.getenv("BAND_MNEMONIC")
+    WORKER_FEE_BAND = os.getenv("WORKER_FEE_BAND", 5000)
+    BAND_PREPARE_GAS = int(os.getenv("BAND_PREPARE_GAS", 100000))
+    BAND_EXECUTE_GAS = int(os.getenv("BAND_EXECUTE_GAS", 400000))
+    BAND_GAS_LIMIT = int(os.getenv("BAND_GAS_LIMIT", 800000))
+    MIN_COUNT = int(os.getenv("MIN_COUNT", 2))
+    ASK_COUNT = int(os.getenv("ASK_COUNT", 3))
+
+
+@dataclass
+class NotificationConfig:
+    DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK")
+
+
+@dataclass
 class CreateTaskConfig:
     PROJECT = os.getenv("PROJECT")
     QUEUE = os.getenv("QUEUE")
@@ -39,22 +51,25 @@ class CreateTaskConfig:
     SERVICE_ACCOUNT_DETAIL = os.getenv("SERVICE_ACCOUNT_DETAIL")
 
 
-class DbConfig(object):
+@dataclass
+class DbConfig:
     SCHEDULER_API_ENABLED = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     DB_USER = os.getenv("DB_USER")
     DB_PASSWORD = os.getenv("DB_PASSWORD")
-    INSTANCE_HOST = os.getenv("INSTANCE_HOST")
+    DB_HOST = os.getenv("DB_HOST")
     DB_PORT = os.getenv("DB_PORT")
     DB_NAME = os.getenv("DB_NAME")
 
-    if AppEnvConfig.RUN_LOCAL:
+    RUN_LOCAL = os.getenv("RUN_LOCAL", "True").lower() == "true"
+    if RUN_LOCAL:
         SQLALCHEMY_DATABASE_URI = "sqlite:///{}".format(os.path.join(os.path.dirname(__file__), "vrf_worker.db"))
     else:
-        SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{INSTANCE_HOST}:{DB_PORT}/{DB_NAME}"
+        SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 
+@dataclass
 class Abi:
     VRF_PROVIDER_ABI = [
         {
@@ -74,20 +89,16 @@ class Abi:
             "stateMutability": "view",
             "type": "function",
         },
-    ]
-
-    VRF_LENS_ABI = [
         {
             "inputs": [],
-            "name": "getProviderConfig",
-            "outputs": [
-                {"internalType": "uint64", "name": "", "type": "uint64"},
-                {"internalType": "uint8", "name": "", "type": "uint8"},
-                {"internalType": "uint8", "name": "", "type": "uint8"},
-            ],
+            "name": "oracleScriptID",
+            "outputs": [{"internalType": "uint64", "name": "", "type": "uint64"}],
             "stateMutability": "view",
             "type": "function",
         },
+    ]
+
+    VRF_LENS_ABI = [
         {
             "inputs": [{"internalType": "uint64[]", "name": "nonces", "type": "uint64[]"}],
             "name": "getTasksBulk",
@@ -99,11 +110,10 @@ class Abi:
                         {"internalType": "address", "name": "caller", "type": "address"},
                         {"internalType": "uint256", "name": "taskFee", "type": "uint256"},
                         {"internalType": "bytes32", "name": "seed", "type": "bytes32"},
+                        {"internalType": "bytes32", "name": "result", "type": "bytes32"},
                         {"internalType": "string", "name": "clientSeed", "type": "string"},
-                        {"internalType": "bytes", "name": "proof", "type": "bytes"},
-                        {"internalType": "bytes", "name": "result", "type": "bytes"},
                     ],
-                    "internalType": "struct VRFProviderBase.Task[]",
+                    "internalType": "struct VRFLensV2.Task[]",
                     "name": "",
                     "type": "tuple[]",
                 }
