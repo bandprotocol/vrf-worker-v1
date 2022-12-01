@@ -1,12 +1,12 @@
 # Band VRF Worker
 
-### What is VRF Worker
+### What is VRF Worker?
 
-VRF Worker is an off-chain service used for relaying VRF random value requests and results between the BandChain and the target chain (e.g. Ethereum). It works as follows:
+VRF Worker is an off-chain service used for relaying VRF random value requests and results between the BandChain and the client chain (e.g. Ethereum). It works as follows:
 
-1. The VRF Worker listens for incoming VRF random value requests from a VRF Contract on the target chain
-2. The VRF Worker relays these requests to BandChain, and retrieves the generated VRF random values and the BandChain Merkle proofs
-3. The proofs get relayed to the Bridge Contract, via the VRF Contract, for verification
+1. The VRF Worker listens for incoming VRF random value requests from a VRF Contract on the client chain
+2. The VRF Worker relays these requests to BandChain, and retrieves the generated VRF random values and the corresponding BandChain Merkle proofs
+3. The proofs get relayed to the Bridge Contract, via the VRFProvider Contract, for verification
 4. If the proofs are verified successfully, the VRF Worker returns the generated VRF random values back to the VRF contract
 
 ## Deployment
@@ -30,7 +30,6 @@ vrf_worker
    │     ├─ error_handler.py
    │     ├─ helpers.py
    │     ├─ web3_interactor.py
-   ├─ requirements.txt
    ├─ scripts
    │  ├─ create_task.sh
    │  ├─ deploy.sh
@@ -65,13 +64,17 @@ vrf_worker
 
 ### Deploy on local machine
 
-1. Install dependencies from `requirements.txt`
+1. Install dependency manager [Poetry](https://python-poetry.org/docs/) on your machine (if required)
+    ```
+    curl -sSL https://install.python-poetry.org | python3 -
+    ```
+2. Install dependencies from `poetry.lock`
    ```
-   pip install -r requirements.txt
+   poetry install
    ```
-2. Create a `.env` file from `.env.template` and update required environmental variables
-3. Setup a database. The default for local deployment is SQLite. To connect to another the database, please update `SQLALCHEMY_DATABASE_URI` in `app/helpers/config.py` file
-4. Run `deploy_local.sh` script to start the service. Note that the service will continue running until manually interupted.
+3. Create a `.env` file from `.env.template` and update required environmental variables
+4. Setup a database. The default for local deployment is SQLite. To connect to another the database, please update `SQLALCHEMY_DATABASE_URI` in `app/helpers/config.py` file
+5. Run `deploy_local.sh` script to start the service. Note that the service will continue running until manually interupted.
    ```
    ./scripts/deploy_local.sh
    ```
@@ -90,9 +93,13 @@ vrf_worker
    - Set `Max concurrent dispatches` to 1
    - Set `Max attempts` to 1
 3. Prepare script for deploying the service
-   - Install dependencies from `requirements.txt`
+   - Install dependency manager [Poetry](https://python-poetry.org/docs/) on your machine (if required)
      ```
-     pip install -r requirements.txt
+     curl -sSL https://install.python-poetry.org | python3 -
+     ```
+   - Install dependencies from `poetry.lock`
+     ```
+     poetry install
      ```
    - In `deploy.sh` file, fill out all environment variables (refer to `deploy.sh.example` and `.env.template` for examples). Note that some variables such as `CLOUD_RUN_URL` and `AUDIENCE` may not be known prior to the first deployment. These variables can be manually added in the Cloud Run service after deployment
 4. Deploy the service on Cloud Run
