@@ -378,14 +378,16 @@ class Helpers:
 
             count = 1
             while count <= 10:
-                return (
-                    requests.get(f"{proof_endpoint}/{req_id}?height={height}").json()["result"]["evm_proof_bytes"],
-                    height,
-                )
-            count += 1
-            time.sleep(3)
+                try: 
+                    evm_proof_bytes = requests.get(f"{proof_endpoint}/{req_id}?height={height}").json()["result"]["evm_proof_bytes"]
+                    break
+                except Exception:
+                    count += 1
+                    time.sleep(3)
             if count >= 10:
                 raise Exception("Unable to get proof - final proof not retrieved")
+
+            return (evm_proof_bytes, height)
 
         except Exception as e:
             print("Error try_get_request_proof_by_id", e)
