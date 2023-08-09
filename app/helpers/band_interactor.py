@@ -97,13 +97,14 @@ class BandInteractor:
                         prepare_gas=self.config.BAND_PREPARE_GAS,
                         execute_gas=self.config.BAND_EXECUTE_GAS,
                         sender=band_requester_address_bech32,
+                        fee_limit=[Coin(amount=self.config.BAND_DS_FEE_LIMIT, denom="uband")],
                     )
                 )
                 .with_sequence(account.sequence)
                 .with_account_num(account.account_number)
                 .with_chain_id(await self.band_client.get_chain_id())
-                .with_gas(self.config.BAND_GAS_LIMIT)
-                .with_fee([Coin(amount=self.config.WORKER_FEE_BAND, denom="uband")])
+                .with_gas_limit(self.config.BAND_GAS_LIMIT)
+                .with_gas_price(self.config.BAND_GAS_PRICE)
                 .with_memo("")
             )
 

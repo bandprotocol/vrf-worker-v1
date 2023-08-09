@@ -124,3 +124,15 @@ vrf_worker
    - After the current task is finished, a new task will be created automatically by the service
    - The service will now continuously until the Cloud Tasks queue is paused or deleted
    - If there is an error in the automatic task creation by the service, you may run `create_task.sh` script to create a new task in the Cloud Tasks queue again.
+
+## License
+
+Copyright 2023 Band Protocol
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+```
+http://www.apache.org/licenses/LICENSE-2.0
+```
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
