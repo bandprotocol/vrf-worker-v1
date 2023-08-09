@@ -26,10 +26,11 @@ class BandChainConfig:
     BAND_RPC_ENDPOINTS = os.getenv("BAND_RPC_ENDPOINTS", "https://rpc.laozi-testnet6.bandchain.org").split(",")
     BAND_PROOF_URLS = os.getenv("BAND_PROOF_URLS", "https://laozi-testnet6.bandchain.org/api/oracle/proof").split(",")
     BAND_MNEMONIC = os.getenv("BAND_MNEMONIC")
-    WORKER_FEE_BAND = os.getenv("WORKER_FEE_BAND", 5000)
     BAND_PREPARE_GAS = int(os.getenv("BAND_PREPARE_GAS", 100000))
     BAND_EXECUTE_GAS = int(os.getenv("BAND_EXECUTE_GAS", 400000))
+    BAND_DS_FEE_LIMIT = os.getenv("BAND_DS_FEE_LIMIT", 48)
     BAND_GAS_LIMIT = int(os.getenv("BAND_GAS_LIMIT", 800000))
+    BAND_GAS_PRICE = float(os.getenv("BAND_GAS_PRICE", 0.0025))
     MIN_COUNT = int(os.getenv("MIN_COUNT", 2))
     ASK_COUNT = int(os.getenv("ASK_COUNT", 3))
 
