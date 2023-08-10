@@ -3,7 +3,7 @@ name = "vrf-worker-v1"
 version = "0.1.2"
 description = ""
 authors = ["Band Protocol"]
-license = "MIT License"
+license = "Apache 2.0"
 
 [tool.poetry.dependencies]
 python = "3.10.x"
