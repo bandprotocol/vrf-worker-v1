@@ -11,6 +11,7 @@ from helpers.band_interactor import BandInteractor
 from helpers.error_handler import ErrorHandler
 
 app = Flask(__name__)
+app.app_context().push()
 app.config.from_object(DbConfig())
 db = Database(app)
 evm_chain_config = EvmChainConfig()
