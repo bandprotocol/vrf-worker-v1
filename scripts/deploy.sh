@@ -62,7 +62,9 @@ gcloud run deploy $SERVICE_NAME \
     --set-env-vars "^##^BAND_PROOF_URLS=$BAND_PROOF_URLS" \
     --set-env-vars BAND_PREPARE_GAS=$BAND_PREPARE_GAS \
     --set-env-vars BAND_EXECUTE_GAS=$BAND_EXECUTE_GAS \
+    --set-env-vars BAND_DS_FEE_LIMIT=$BAND_DS_FEE_LIMIT \
     --set-env-vars BAND_GAS_LIMIT=$BAND_GAS_LIMIT \
+    --set-env-vars BAND_GAS_PRICE=$BAND_GAS_PRICE \
     --set-env-vars MIN_COUNT=$MIN_COUNT \
     --set-env-vars ASK_COUNT=$ASK_COUNT \
     --set-env-vars VRF_PROVIDER_ADDRESS=$VRF_PROVIDER_ADDRESS \
