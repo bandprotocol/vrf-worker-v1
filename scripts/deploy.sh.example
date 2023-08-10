@@ -27,7 +27,6 @@ export MAX_RELAY_PROOF_GAS=1200000
 export START_NONCE=0
 export DISCORD_WEBHOOK=<DISCORD_WEBHOOK>
 export WHITELISTED_CALLERS=0xE2f7Cf77DF70af8e92FF69B8Ffc92585C307a221
-export WORKER_FEE_BAND=5000
 export BLOCK_DIFF=10
 export SUPPORT_EIP1559=True
 export DB_HOST=<INSTANCE_HOST_PRIVATE_IP>
@@ -64,7 +63,9 @@ gcloud run deploy $SERVICE_NAME \
     --set-env-vars "^##^BAND_PROOF_URLS=$BAND_PROOF_URLS" \
     --set-env-vars BAND_PREPARE_GAS=$BAND_PREPARE_GAS \
     --set-env-vars BAND_EXECUTE_GAS=$BAND_EXECUTE_GAS \
+    --set-env-vars BAND_DS_FEE_LIMIT=$BAND_DS_FEE_LIMIT \
     --set-env-vars BAND_GAS_LIMIT=$BAND_GAS_LIMIT \
+    --set-env-vars BAND_GAS_PRICE=$BAND_GAS_PRICE \
     --set-env-vars MIN_COUNT=$MIN_COUNT \
     --set-env-vars ASK_COUNT=$ASK_COUNT \
     --set-env-vars VRF_PROVIDER_ADDRESS=$VRF_PROVIDER_ADDRESS \
@@ -74,7 +75,6 @@ gcloud run deploy $SERVICE_NAME \
     --set-env-vars START_NONCE=$START_NONCE \
     --set-env-vars DISCORD_WEBHOOK=$DISCORD_WEBHOOK \
     --set-env-vars "^##^WHITELISTED_CALLERS=$WHITELISTED_CALLERS" \
-    --set-env-vars WORKER_FEE_BAND=$WORKER_FEE_BAND \
     --set-env-vars BLOCK_DIFF=$BLOCK_DIFF \
     --set-env-vars SUPPORT_EIP1559=$SUPPORT_EIP1559 \
     --set-env-vars DB_HOST=$DB_HOST \
