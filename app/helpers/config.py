@@ -33,6 +33,7 @@ class BandChainConfig:
     BAND_GAS_PRICE = float(os.getenv("BAND_GAS_PRICE", 0.0025))
     MIN_COUNT = int(os.getenv("MIN_COUNT", 2))
     ASK_COUNT = int(os.getenv("ASK_COUNT", 3))
+    WORKER_FEE_BAND = int(os.getenv("WORKER_FEE_BAND", 3))
 
 
 @dataclass
