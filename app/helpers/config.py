@@ -112,7 +112,7 @@ class Abi:
                         {"internalType": "uint256", "name": "taskFee", "type": "uint256"},
                         {"internalType": "bytes32", "name": "seed", "type": "bytes32"},
                         {"internalType": "bytes32", "name": "result", "type": "bytes32"},
-                        {"internalType": "string", "name": "clientSeed", "type": "string"},
+                        {"internalType": "bytes", "name": "clientSeed", "type": "bytes"},
                     ],
                     "internalType": "struct VRFLensV2.Task[]",
                     "name": "",
