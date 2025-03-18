@@ -1,5 +1,5 @@
 Dockerfile
-README.md
+vrf_worker/README.md
 *.pyc
 *.pyo
 *.pyd
@@ -9,3 +9,4 @@ __pycache__
 .env.template
 *_deploy*
 vrf_worker.db
+.*/

@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.13
 
 ENV PYTHONUNBUFFERED True
 
@@ -12,7 +12,7 @@ RUN pip install "poetry==$POETRY_VERSION"
 
 WORKDIR $APP_HOME
 COPY . ./
-COPY ./app ./
+COPY vrf_worker ./
 
 RUN poetry config virtualenvs.create false \
 && poetry install --no-dev --no-interaction --no-ansi
