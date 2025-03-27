@@ -1,4 +1,4 @@
-from typing import Dict, List, Tuple, Union, Literal
+from typing import Dict, List, Literal, Tuple, Union
 
 from eth_account.signers.base import BaseAccount
 from eth_typing import (

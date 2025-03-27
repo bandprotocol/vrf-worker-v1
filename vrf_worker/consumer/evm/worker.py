@@ -5,9 +5,9 @@ from logbook import Logger
 from pyband.wallet import Wallet
 
 from vrf_worker.band.client import Client as BandClient
+from vrf_worker.band.types import TxParams
 from vrf_worker.band.utils import find_request_id
 from vrf_worker.config import EvmConfig
-from vrf_worker.band.types import TxParams
 from vrf_worker.consumer.evm.utils import trim_proof
 from vrf_worker.types import Task
 
@@ -105,7 +105,7 @@ class Worker:
             except Exception as e:
                 self.logger.error(f"Error getting evm proof and block hash for nonce {nonce}: {e}")
                 continue
-        
+
             # relay proof
             try:
                 self.logger.info(f"Relaying VRF proof for nonce: {nonce}")

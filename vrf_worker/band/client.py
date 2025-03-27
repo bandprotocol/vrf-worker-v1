@@ -1,17 +1,17 @@
 import asyncio
 import time
+
 import grpclib
 import pyband
-
-from pyband.obi import PyObi
-from pyband.proto.cosmos.base.abci.v1beta1 import TxResponse
-from pyband.proto.cosmos.base.v1beta1 import Coin
 from pyband.messages.band.oracle.v1 import MsgRequestData
-from pyband.transaction import Transaction
+from pyband.obi import PyObi
 from pyband.proto.band.base.oracle.v1 import ProofRequest
-from pyband.wallet import Wallet
 from pyband.proto.band.oracle.v1 import ResolveStatus
+from pyband.proto.cosmos.base.abci.v1beta1 import TxResponse
 from pyband.proto.cosmos.base.tendermint.v1beta1 import GetBlockByHeightRequest
+from pyband.proto.cosmos.base.v1beta1 import Coin
+from pyband.transaction import Transaction
+from pyband.wallet import Wallet
 
 from vrf_worker.band.types import TxParams
 

@@ -1,10 +1,9 @@
 import hashlib
+
 from eth_abi import decode, encode
 from eth_account.account import Account
 
-
 from vrf_worker.consumer.evm.types import RELAY_DATA_TYPES
-
 
 Signature = tuple[bytes, bytes, bytes, bytes]
 

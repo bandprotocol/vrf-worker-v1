@@ -1,7 +1,9 @@
 import asyncio
-from logbook import StreamHandler
+import sys
+
 from eth_account import Account
 from eth_account.account import LocalAccount
+from logbook import StreamHandler
 from omegaconf import OmegaConf
 from pyband.wallet import Wallet
 
@@ -9,8 +11,6 @@ from vrf_worker.band.client import Client as BandClient
 from vrf_worker.band.types import TxParams
 from vrf_worker.consumer.evm.client import Client as EvmClient
 from vrf_worker.consumer.evm.worker import Worker
-
-import sys
 
 
 async def main():

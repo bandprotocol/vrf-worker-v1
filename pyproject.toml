@@ -2,14 +2,16 @@
 name = "vrf-worker-v1"
 version = "0.2.0-alpha.1"
 description = ""
-authors = ["Band Protocol"]
-license = "Apache 2.0"
+authors = [
+    { name = "Band Protocol", email = "dev@bandprotocol.com" }
+]
+license = "Apache-2.0"
 
 requires-python = ">=3.13"
 dependencies = [
     "logbook==1.8.0",
     "omegaconf==2.3.0",
-    "pyband==0.4.0rc2",
+    "pyband==0.4.0rc3",
     "web3==7.9.0",
 ]
 
@@ -18,6 +20,7 @@ prerelease = "allow"
 
 [tool.ruff]
 line-length = 120
+lint.extend-select = ["I"]
 
 [dependency-groups]
 dev = [

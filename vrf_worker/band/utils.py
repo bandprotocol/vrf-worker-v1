@@ -1,5 +1,6 @@
-from pyband.proto.cosmos.base.abci.v1beta1 import TxResponse
 from typing import Optional
+
+from pyband.proto.cosmos.base.abci.v1beta1 import TxResponse
 
 
 def find_request_id(tx_resp: TxResponse) -> Optional[int]:

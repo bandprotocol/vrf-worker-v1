@@ -1,7 +1,6 @@
 import pytest
 
-from vrf_worker.consumer.evm.utils import _recover_address
-from vrf_worker.consumer.evm.utils import trim_proof
+from vrf_worker.consumer.evm.utils import _recover_address, trim_proof
 
 
 @pytest.fixture

@@ -1,6 +1,6 @@
+import pytest
 from pyband.proto.cosmos.base.abci.v1beta1 import TxResponse
 from pyband.proto.tendermint.abci import Event, EventAttribute
-import pytest
 
 from vrf_worker.band.utils import find_request_id
 
