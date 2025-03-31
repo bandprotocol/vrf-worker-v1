@@ -1,20 +1,15 @@
-FROM python:3.13
+FROM python:3.13.2
 
-ENV PYTHONUNBUFFERED True
+RUN pip install --upgrade pip
 
-ENV APP_HOME /app
-ENV RUN_LOCAL=False
-ENV PORT=8080
-ENV HOST=0.0.0.0
-ENV POETRY_VERSION=1.2.2
+# Install build dependencies
+RUN apt update -y && apt install -y python3-dev libsecp256k1-dev
 
-RUN pip install "poetry==$POETRY_VERSION"
+RUN pip install uv
 
-WORKDIR $APP_HOME
-COPY . ./
-COPY vrf_worker ./
+WORKDIR /app
 
-RUN poetry config virtualenvs.create false \
-&& poetry install --no-dev --no-interaction --no-ansi
+COPY pyproject.toml uv.lock main.py ./
+COPY vrf_worker ./vrf_worker/
 
-CMD exec gunicorn --bind :$PORT --worker-class uvicorn.workers.UvicornWorker --threads 4 --timeout 0 app:app
+CMD ["uv", "run", "main.py"]

@@ -23,7 +23,7 @@ class Worker:
         band_wallet: Wallet,
         band_tx_params: TxParams,
         evm_config: EvmConfig,
-        logger: Logger = Logger(None, 11),
+        logger: Logger = Logger("vrf_worker", 11),
         poll_rate: int = 5,
         startup_nonce_check: int = 100,
     ) -> None:
@@ -43,6 +43,8 @@ class Worker:
 
     async def start(self) -> None:
         """Starts the worker."""
+        self.logger.info("Starting worker")
+        
         queue: asyncio.Queue[(int, Task)] = asyncio.Queue(10000)
 
         # get bandchain encoded chain id

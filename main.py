@@ -14,7 +14,11 @@ from vrf_worker.consumer.evm.worker import Worker
 
 
 async def main():
-    config = OmegaConf.load("config.yaml")
+    try:
+        config = OmegaConf.load("config.yaml")
+    except FileNotFoundError:
+        print("config.yaml not found")
+        sys.exit(1)
 
     StreamHandler(sys.stdout).push_application()
 
