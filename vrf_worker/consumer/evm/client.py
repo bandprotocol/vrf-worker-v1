@@ -143,7 +143,7 @@ class Client:
         gas_price_strategy: Literal["maxPriorityFeePerGas", "maxFeePerGas"],
         gas_price_value: int,
     ) -> HexStr:
-        """Retrieves the proof transaction data.
+        """Relay the proof transaction data.
 
         Args:
             proof (bytes): Proof.

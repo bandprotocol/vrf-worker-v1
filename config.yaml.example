@@ -19,4 +19,4 @@ band_chain_config:
   execute_gas: 400000
   ds_fee_limit: 48
   gas_limit: 800000
-  gas_price: 0.0025 
+  gas_price: 0.0025

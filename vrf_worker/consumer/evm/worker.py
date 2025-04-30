@@ -65,7 +65,7 @@ class Worker:
             (nonce, task) = await queue.get()
             self.logger.info(f"Received task: {nonce}")
 
-            # request random data on bandchain
+            # request VRF data on bandchain
             try:
                 self.logger.info(f"Requesting VRF for nonce: {nonce}")
                 tx_resp = await self.band_client.request_vrf(
@@ -96,14 +96,14 @@ class Worker:
                 continue
 
             try:
-                self.logger.info(f"Generating VRF proof for nonce: {nonce}")
+                self.logger.info(f"Generating VRF proof for nonce {nonce}")
                 (
                     evm_proof_bytes,
                     block_hash,
                 ) = await self.band_client.get_evm_proof_and_block_hash(request_id, initial_block_delay=1)
                 validators = self.evm_client.get_validators_from_bridge()
                 trimmed_proof = trim_proof(evm_proof_bytes, block_hash, encoded_band_chain_id, validators)
-                self.logger.info(f"Sucessfully generated VRF proof for nonce: {nonce}")
+                self.logger.info(f"Sucessfully generated VRF proof for nonce {nonce}")
             except Exception as e:
                 self.logger.error(f"Error getting evm proof and block hash for nonce {nonce}: {e}")
                 continue

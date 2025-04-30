@@ -106,7 +106,7 @@ class Client:
 
         Args:
             tx_hash (str): The hash of the transaction.
-            timeout (int): The timeout for the request.
+            timeout (int): The timeout for the request in seconds.
 
         Returns:
             TxResponse: The transaction response.
@@ -129,7 +129,7 @@ class Client:
 
         Args:
             request_id (int): The request id.
-            timeout (int): The timeout for the request.
+            timeout (int): The timeout for the request in seconds.
             initial_block_delay (int): An optional initial block delay.
 
         Returns:
@@ -145,7 +145,6 @@ class Client:
                 # Get initial proof
                 proof_request = ProofRequest(request_id=request_id)
                 resp = await self.client.get_proof(proof_request)
-                resp.result.proof.oracle_data_proof.result
                 resolve_status = resp.result.proof.oracle_data_proof.result.resolve_status
                 match resolve_status:
                     case ResolveStatus.OPEN_UNSPECIFIED:
