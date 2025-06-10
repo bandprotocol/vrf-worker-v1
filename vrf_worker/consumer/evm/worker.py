@@ -115,8 +115,6 @@ class Worker:
                     trimmed_proof,
                     nonce,
                     self.evm_account,
-                    self.evm_config.gas_strategy,
-                    self.evm_config.gas_price,
                 )
                 status = self.evm_client.get_tx_receipt_status(tx_hash)
                 if status == 1:

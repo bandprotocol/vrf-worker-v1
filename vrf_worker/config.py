@@ -23,8 +23,6 @@ class EvmConfig:
     vrf_lens_address: str
     bridge_address: str
     private_key: str
-    gas_strategy: Literal["maxPriorityFeePerGas", "maxFeePerGas"]
-    gas_price: int
     start_nonce: int = 0
     block_difference: int = 10
 

@@ -45,7 +45,6 @@ class Client:
         self.bridge_contract = w3.eth.contract(bridge_address, abi=BRIDGE_ABI)
 
         self.w3 = w3
-        self.w3.eth.account.from_key
 
     def get_current_task_nonce_from_vrf_provider(self) -> int:
         """Retrieves the latest task nonce from the VRF Provider contract.
@@ -140,17 +139,13 @@ class Client:
         proof: bytes,
         nonce: int,
         account: BaseAccount,
-        gas_price_strategy: Literal["maxPriorityFeePerGas", "maxFeePerGas"],
-        gas_price_value: int,
-    ) -> HexStr:
+    ) -> str:
         """Relay the proof transaction data.
 
         Args:
-            proof (bytes): Proof.
-            task (Task): Task.
+            proof (bytes): the proof to relay.
+            nonce (bytes): the task nonce.
             account (BaseAccount): Account.
-            gas_strategy (Literal["maxPriorityFeePerGas", "maxFeePerGas"]): Gas strategy.
-            gas_value (int): Gas value.
 
         Returns:
             Web3Tx: Web3 transaction data.
@@ -162,7 +157,7 @@ class Client:
             tx_params = {
                 "from": account.address,
                 "nonce": self.w3.eth.get_transaction_count(account.address),
-                gas_price_strategy: gas_price_value,
+                "maxPriorityFeePerGas": self.w3.eth.max_priority_fee,
             }
             fn = self.provider_contract.functions.relayProof(proof, nonce)
             gas = fn.estimate_gas(tx_params)

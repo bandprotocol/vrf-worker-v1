@@ -804,7 +804,7 @@ wheels = [
 
 [[package]]
 name = "pyband"
-version = "0.4.0rc2"
+version = "0.4.0rc3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bech32" },
@@ -816,9 +816,9 @@ dependencies = [
     { name = "mnemonic" },
     { name = "python-dateutil" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a8/3b/217e94e9bf9a1ebe75a94ee89e8a629a955bfb9c589be18c64606bf0efa1/pyband-0.4.0rc2.tar.gz", hash = "sha256:a7d70c33b78e23d76b7e4b56dd5b2553c546f0915693d3e12b779c7654121240", size = 172995 }
+sdist = { url = "https://files.pythonhosted.org/packages/45/6d/40a9806063dffafaa1712226c330dfe7b32caeb17d78029fc21b6fcdd7dc/pyband-0.4.0rc3.tar.gz", hash = "sha256:0e503f47e7aaf2ab04f9e622d627657f159b36f7b3e9bc1d11e6016f56d696dc", size = 173546 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b2/80/268449a0ca1961b8177175630b620883c93594b2a22feb019143047043e4/pyband-0.4.0rc2-py3-none-any.whl", hash = "sha256:78010ae97425769fff5d5f23ba1091bd4fc277ed12201f5eafcda5999d213a70", size = 230905 },
+    { url = "https://files.pythonhosted.org/packages/9e/2d/ab7fc15f87f7dbad39adb560ca3547e750b624080d9e3d5feca5f9d65068/pyband-0.4.0rc3-py3-none-any.whl", hash = "sha256:2008b9c8254725cc5858e9641c78052f50f893a4e1be749d1d3f02c42a3988cd", size = 230767 },
 ]
 
 [[package]]
@@ -1208,7 +1208,7 @@ dev = [
 requires-dist = [
     { name = "logbook", specifier = "==1.8.0" },
     { name = "omegaconf", specifier = "==2.3.0" },
-    { name = "pyband", specifier = "==0.4.0rc2" },
+    { name = "pyband", specifier = "==0.4.0rc3" },
     { name = "web3", specifier = "==7.9.0" },
 ]
 
