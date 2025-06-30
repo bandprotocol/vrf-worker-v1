@@ -25,7 +25,7 @@ class EvmConfig:
     private_key: str
     start_nonce: int = 0
     eip1559: bool = True
-    whitelisted_callers: list[str]
+    whitelisted_callers: list[str] = []
 
 
 @dataclass
