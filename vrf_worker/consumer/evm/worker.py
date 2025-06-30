@@ -55,7 +55,7 @@ class Worker:
 
         # check latest nonce
         current_nonce = self.evm_client.get_current_task_nonce_from_vrf_provider()
-        start_nonce = max(current_nonce - self.startup_nonce_check, 0)
+        start_nonce = max(current_nonce - self.startup_nonce_check, self.evm_config.start_nonce)
 
         # poll the contract for new tasks every 5 seconds
         loop = asyncio.get_running_loop()
