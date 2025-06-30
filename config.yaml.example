@@ -1,5 +1,5 @@
 evm_chain_config:
-  chain_id: "1"
+  chain_id: "<CHAIN_ID>"
   rpc_endpoint: "<RPC_URL>"
   vrf_provider_address: "0x1234..."
   vrf_lens_address: "0x1234..."
