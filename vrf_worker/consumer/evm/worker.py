@@ -44,7 +44,7 @@ class Worker:
     async def start(self) -> None:
         """Starts the worker."""
         self.logger.info("Starting worker")
-        
+
         queue: asyncio.Queue[(int, Task)] = asyncio.Queue(10000)
 
         # get bandchain encoded chain id
@@ -59,7 +59,9 @@ class Worker:
 
         # poll the contract for new tasks every 5 seconds
         loop = asyncio.get_running_loop()
-        loop.create_task(poll_tasks(self.evm_client, start_nonce, self.poll_rate, queue))
+        loop.create_task(
+            poll_tasks(self.evm_client, start_nonce, self.poll_rate, queue, self.evm_config.whitelisted_callers)
+        )
 
         while True:
             (nonce, task) = await queue.get()
@@ -130,6 +132,7 @@ async def poll_tasks(
     current_nonce: int,
     poll_rate: int,
     queue: asyncio.Queue[(int, Task)],
+    whitelisted_callers: list[str],
 ) -> None:
     while True:
         await asyncio.sleep(poll_rate)
@@ -138,7 +141,7 @@ async def poll_tasks(
             nonces_to_check = list(range(current_nonce, latest_nonce))
             tasks = client.get_tasks_by_nonces(nonces_to_check)
             for nonce, task in zip(nonces_to_check, tasks):
-                if not task.is_resolved:
+                if not task.is_resolved and task.caller in whitelisted_callers:
                     await queue.put((nonce, task))
 
             current_nonce = latest_nonce

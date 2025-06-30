@@ -9,14 +9,15 @@ evm_chain_config:
   gas_price: 20000000000
   start_nonce: 0
   block_difference: 10
+  whitelisted_callers: 
 
 band_chain_config:
-  grpc_endpoint: "rpc.band-v3-testnet.bandchain.org:443"
+  grpc_endpoint: "band-v3-testnet.bandchain.org:443"
   mnemonic: "<MNEMONIC>"
   min_count: 2
   ask_count: 3
   prepare_gas: 100000
   execute_gas: 400000
-  ds_fee_limit: 48
+  ds_fee_limit: 1000000
   gas_limit: 800000
   gas_price: 0.0025
