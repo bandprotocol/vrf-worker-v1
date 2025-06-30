@@ -5,11 +5,11 @@ evm_chain_config:
   vrf_lens_address: "0x1234..."
   bridge_address: "0x1234..."
   private_key: "<PK>"
-  start_nonce: 0
-  eip1559: true
   whitelisted_callers: 
     - "0x1234..."
     - "0x1234..."
+  start_nonce: 0
+  eip1559: true
 
 band_chain_config:
   grpc_endpoint: "band-v3-testnet.bandchain.org:443"

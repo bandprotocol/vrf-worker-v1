@@ -36,8 +36,6 @@ evm_chain_config:
   vrf_lens_address: "${VRF_LENS_ADDRESS}"
   bridge_address: "${BRIDGE_ADDRESS}"
   private_key: "${WORKER_PK}"
-  start_nonce: ${START_NONCE}
-  eip1559: ${SUPPORT_EIP1559:-true}
   whitelisted_callers:
 $(if [[ -n "$WHITELISTED_CALLERS" ]]; then
   IFS=','; for caller in $WHITELISTED_CALLERS; do
@@ -45,6 +43,8 @@ $(if [[ -n "$WHITELISTED_CALLERS" ]]; then
     [[ -n "$caller_trimmed" ]] && echo "    - \"$caller_trimmed\""
   done
 fi)
+  start_nonce: ${START_NONCE}
+  eip1559: ${SUPPORT_EIP1559:-true}
 
 band_chain_config:
   grpc_endpoint: "${BAND_GRPC_ENDPOINTS}"
