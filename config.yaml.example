@@ -5,11 +5,11 @@ evm_chain_config:
   vrf_lens_address: "0x1234..."
   bridge_address: "0x1234..."
   private_key: "<PK>"
-  gas_strategy: "maxPriorityFeePerGas"
-  gas_price: 20000000000
   start_nonce: 0
-  block_difference: 10
+  eip1559: true
   whitelisted_callers: 
+    - "0x1234..."
+    - "0x1234..."
 
 band_chain_config:
   grpc_endpoint: "band-v3-testnet.bandchain.org:443"

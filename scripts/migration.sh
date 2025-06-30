@@ -37,7 +37,14 @@ evm_chain_config:
   bridge_address: "${BRIDGE_ADDRESS}"
   private_key: "${WORKER_PK}"
   start_nonce: ${START_NONCE}
-  block_difference: ${BLOCK_DIFF}
+  eip1559: ${SUPPORT_EIP1559:-true}
+  whitelisted_callers:
+$(if [[ -n "$WHITELISTED_CALLERS" ]]; then
+  IFS=','; for caller in $WHITELISTED_CALLERS; do
+    caller_trimmed="$(echo "$caller" | xargs)"
+    [[ -n "$caller_trimmed" ]] && echo "    - \"$caller_trimmed\""
+  done
+fi)
 
 band_chain_config:
   grpc_endpoint: "${BAND_GRPC_ENDPOINTS}"
