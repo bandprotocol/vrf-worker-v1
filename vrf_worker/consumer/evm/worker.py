@@ -86,8 +86,8 @@ class Worker:
                 )
                 self.logger.info(f"Successfully requested VRF for nonce: {nonce}")
             except Exception as e:
-                queue.put((nonce, task, retry + 1))
                 self.logger.error(f"Error requesting VRF for nonce {nonce}: {e}")
+                await queue.put((nonce, task, retry + 1))
                 continue
 
             try:
@@ -95,15 +95,15 @@ class Worker:
                     raise Exception(f"Transaction failed with code {tx_resp.code}: {tx_resp.raw_log}")
                 tx_resp = await self.band_client.get_transaction(tx_resp.txhash)
             except Exception as e:
-                queue.put((nonce, task, retry + 1))
                 self.logger.error(f"Error getting transaction for nonce {nonce}: {e}")
+                await queue.put((nonce, task, retry + 1))
                 continue
 
             request_id = find_request_id(tx_resp)
             self.logger.info(f"requested VRF with request_id {request_id}")
             if not request_id:
-                queue.put((nonce, task, retry + 1))
                 self.logger.error(f"Request ID not found for nonce {nonce}. received tx with code: {tx_resp.code}")
+                await queue.put((nonce, task, retry + 1))
                 continue
 
             try:
@@ -116,8 +116,8 @@ class Worker:
                 trimmed_proof = trim_proof(evm_proof_bytes, block_hash, encoded_band_chain_id, validators)
                 self.logger.info(f"Sucessfully generated VRF proof for nonce {nonce}")
             except Exception as e:
-                queue.put((nonce, task, retry + 1))
                 self.logger.error(f"Error getting evm proof and block hash for nonce {nonce}: {e}")
+                await queue.put((nonce, task, retry + 1))
                 continue
 
             # relay proof
@@ -133,11 +133,11 @@ class Worker:
                 if status == 1:
                     self.logger.info(f"Successfully relayed proof for nonce {nonce}")
                 else:
-                    queue.put((nonce, task, retry + 1))
                     self.logger.error(f"Failed to relay proof for nonce {nonce}")
+                    await queue.put((nonce, task, retry + 1))
             except Exception as e:
-                queue.put((nonce, task, retry + 1))
                 self.logger.error(f"Error relaying proof for nonce {nonce}: {e}")
+                await queue.put((nonce, task, retry + 1))
 
 
 async def poll_tasks(
