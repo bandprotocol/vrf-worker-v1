@@ -1,0 +1,23 @@
+evm_chain_config:
+  chain_id: "<CHAIN_ID>"
+  rpc_endpoint: "<RPC_URL>"
+  vrf_provider_address: "0x1234..."
+  vrf_lens_address: "0x1234..."
+  bridge_address: "0x1234..."
+  private_key: "<PK>"
+  whitelisted_callers: 
+    - "0x1234..."
+    - "0x1234..."
+  start_nonce: 0
+  eip1559: true
+
+band_chain_config:
+  grpc_endpoint: "band-v3-testnet.bandchain.org:443"
+  mnemonic: "<MNEMONIC>"
+  min_count: 2
+  ask_count: 3
+  prepare_gas: 100000
+  execute_gas: 400000
+  ds_fee_limit: 1000000
+  gas_limit: 800000
+  gas_price: 0.0025

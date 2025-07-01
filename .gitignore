@@ -1,6 +1,9 @@
+.*/
 .idea/
 __pycache__
 .env
+.venv/
+config.yaml
 *venv*
 .DS_Store
 .pytest_cache
