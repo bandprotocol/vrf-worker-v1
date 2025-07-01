@@ -16,7 +16,6 @@ VRF Worker is an off-chain service used for relaying VRF random value requests a
 - Python 3.13 or higher
 - [uv](https://github.com/astral-sh/uv) package installer
 
-
 ### Installation Steps
 
 1. Copy the example config file and adjust as needed:
