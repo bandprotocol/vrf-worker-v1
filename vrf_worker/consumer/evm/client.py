@@ -139,34 +139,46 @@ class Client:
         proof: bytes,
         nonce: int,
         account: BaseAccount,
+        eip1559: bool = True,
     ) -> str:
         """Relay the proof transaction data.
 
         Args:
             proof (bytes): the proof to relay.
-            nonce (bytes): the task nonce.
-            account (BaseAccount): Account.
+            nonce (int): the task nonce.
+            account (BaseAccount): Account to sign the transaction.
+            eip1559 (bool, optional): Whether to use EIP-1559 transaction format. Defaults to True.
 
         Returns:
-            Web3Tx: Web3 transaction data.
+            str: Transaction hash as a hex string.
 
         Raises:
             Exception: Failed to relay proof.
         """
         try:
-            tx_params = {
-                "from": account.address,
-                "nonce": self.w3.eth.get_transaction_count(account.address),
-                "maxPriorityFeePerGas": self.w3.eth.max_priority_fee,
-            }
+            tx_params: Web3Tx = {}
+            if eip1559:
+                tx_params = {
+                    "from": account.address,
+                    "nonce": self.w3.eth.get_transaction_count(account.address),
+                    "maxPriorityFeePerGas": self.w3.eth.max_priority_fee,
+                }
+            else:
+                tx_params = {
+                    "from": account.address,
+                    "nonce": self.w3.eth.get_transaction_count(account.address),
+                    "gasPrice": self.w3.eth.gas_price,
+                }
+
             fn = self.provider_contract.functions.relayProof(proof, nonce)
+
             gas = fn.estimate_gas(tx_params)
             tx_params["gas"] = gas
+
             tx = fn.build_transaction(tx_params)
             signed_tx = account.sign_transaction(tx)
-            tx_hash = self.w3.eth.send_raw_transaction(signed_tx.raw_transaction).to_0x_hex()
 
-            return tx_hash
+            return self.w3.eth.send_raw_transaction(signed_tx.raw_transaction).to_0x_hex()
         except Exception as e:
             raise Exception(f"failed to relay proof: {e}")
 

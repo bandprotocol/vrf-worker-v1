@@ -101,7 +101,7 @@ class Client:
         except Exception as e:
             raise e
 
-    async def get_transaction(self, tx_hash: str, timeout: int = 10) -> TxResponse:
+    async def get_transaction(self, tx_hash: str, timeout: int = 30) -> TxResponse:
         """Get a transaction response from BandChain.
 
         Args:
@@ -122,22 +122,16 @@ class Client:
                 await asyncio.sleep(1)
         raise Exception(f"Transaction `{tx_hash}` not found after timeout")
 
-    async def get_evm_proof_and_block_hash(
-        self, request_id: int, timeout: int = 20, initial_block_delay: int = 0
-    ) -> tuple[bytes, bytes]:
+    async def get_evm_proof_and_block_hash(self, request_id: int, timeout: int = 60) -> tuple[bytes, bytes]:
         """Gets the evm proof and block hash from the request id.
 
         Args:
             request_id (int): The request id.
             timeout (int): The timeout for the request in seconds.
-            initial_block_delay (int): An optional initial block delay.
 
         Returns:
             tuple: (evm_proof_bytes, block_hash)
         """
-        if initial_block_delay < 0:
-            raise Exception("initial_block_delay must be greater or equal to 0")
-
         start_time = time.time()
         while time.time() - start_time < timeout:
             asyncio.sleep(1)
