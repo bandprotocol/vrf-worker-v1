@@ -1,4 +1,5 @@
 import asyncio
+import argparse
 import sys
 
 from eth_account import Account
@@ -14,10 +15,18 @@ from vrf_worker.consumer.evm.worker import Worker
 
 
 async def main():
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description="VRF Worker")
+    parser.add_argument(
+        "--config", type=str, default="config.yaml", help="Path to the config file (default: config.yaml)"
+    )
+    args = parser.parse_args()
+
+    # Load configuration
     try:
-        config = OmegaConf.load("config.yaml")
+        config = OmegaConf.load(args.config)
     except FileNotFoundError:
-        print("config.yaml not found")
+        print(f"{args.config} not found")
         sys.exit(1)
 
     StreamHandler(sys.stdout).push_application()

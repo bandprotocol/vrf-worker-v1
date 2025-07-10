@@ -25,8 +25,13 @@ VRF Worker is an off-chain service used for relaying VRF random value requests a
    ```
 2. Run the worker:
    ```sh
-   uv run main.py
+   # Run worker with default path for config file
+   uv run main.py 
    ```
+   ```sh
+   # Run worker with path to config file
+   uv run main.py --config config.yaml
+   ```   
 
 ## License
 
