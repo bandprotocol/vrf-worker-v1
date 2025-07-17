@@ -1,6 +1,7 @@
 import asyncio
 import argparse
 import sys
+import os
 
 from eth_account import Account
 from eth_account.account import LocalAccount
@@ -33,16 +34,19 @@ async def main():
 
     # initialize band
     band_client = BandClient(config.band_chain_config.grpc_endpoint)
-    band_wallet = Wallet.from_mnemonic(config.band_chain_config.mnemonic)
+    # Get Band mnemonic from env or config file
+    band_mnemonic = os.environ.get("BAND_MNEMONIC") or config.band_chain_config.mnemonic
+    band_wallet = Wallet.from_mnemonic(band_mnemonic)
 
-    # initialize evm
+    # Get EVM private key from env or config file
+    evm_private_key = os.environ.get("EVM_PRIVATE_KEY") or config.evm_chain_config.private_key
     evm_client = EvmClient(
         config.evm_chain_config.rpc_endpoint,
         config.evm_chain_config.vrf_provider_address,
         config.evm_chain_config.vrf_lens_address,
         config.evm_chain_config.bridge_address,
     )
-    evm_account: LocalAccount = Account.from_key(config.evm_chain_config.private_key)
+    evm_account: LocalAccount = Account.from_key(evm_private_key)
 
     # initialize worker
     band_tx_params = TxParams(

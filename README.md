@@ -21,7 +21,8 @@ VRF Worker is an off-chain service used for relaying VRF random value requests a
 1. Copy the example config file and adjust as needed:
    ```sh
    cp config.yaml.example config.yaml
-   # Edit config.yaml to match your environment and credentials
+   # Edit config.yaml to match your environment and credentials.
+   # You can also set `BAND_MNEMONIC` and `EVM_PRIVATE_KEY` as environment variables instead.
    ```
 2. Run the worker:
    ```sh
