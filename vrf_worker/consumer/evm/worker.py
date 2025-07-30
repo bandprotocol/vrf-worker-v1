@@ -62,7 +62,9 @@ class Worker:
         # poll the contract for new tasks every 5 seconds
         loop = asyncio.get_running_loop()
         loop.create_task(
-            poll_tasks(self.evm_client, start_nonce, self.poll_rate, queue, self.evm_config.whitelisted_callers)
+            poll_tasks(
+                self.logger, self.evm_client, start_nonce, self.poll_rate, queue, self.evm_config.whitelisted_callers
+            )
         )
 
         while True:
@@ -141,6 +143,7 @@ class Worker:
 
 
 async def poll_tasks(
+    logger: Logger,
     client: EvmClient,
     current_nonce: int,
     poll_rate: int,
@@ -149,12 +152,16 @@ async def poll_tasks(
 ) -> None:
     while True:
         await asyncio.sleep(poll_rate)
-        latest_nonce = client.get_current_task_nonce_from_vrf_provider()
-        if latest_nonce > current_nonce:
-            nonces_to_check = list(range(current_nonce, latest_nonce))
-            tasks = client.get_tasks_by_nonces(nonces_to_check)
-            for nonce, task in zip(nonces_to_check, tasks):
-                if not task.is_resolved and task.caller in whitelisted_callers:
-                    await queue.put((nonce, task, 0))
+        try:
+            latest_nonce = client.get_current_task_nonce_from_vrf_provider()
+            if latest_nonce > current_nonce:
+                nonces_to_check = list(range(current_nonce, latest_nonce))
+                tasks = client.get_tasks_by_nonces(nonces_to_check)
+                for nonce, task in zip(nonces_to_check, tasks):
+                    if not task.is_resolved and task.caller in whitelisted_callers:
+                        await queue.put((nonce, task, 0))
 
-            current_nonce = latest_nonce
+                current_nonce = latest_nonce
+        except Exception as e:
+            logger.error(f"Error polling tasks: {e}")
+            continue
